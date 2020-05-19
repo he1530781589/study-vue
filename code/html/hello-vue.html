@@ -3,11 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Hello Vue</title>
+    <style>
+        .container{ position: relative; width: 960px; margin: 0 auto; padding:0; }
+    </style>
 </head>
-<body>
+<body class="container">
+    <h2>声明与渲染</h2>
     <div id="app">
-        {{message}}
+        {{ message }}
     </div>
+
+    <div id="app-2">
+        <span v-bind:title="message">
+            鼠标悬停几秒钟查看此处动态绑定的提示信息！
+        </span>
+    </div>
+
+    <h2>条件</h2>
+    <div id="app-3">
+        <p v-if="seen">真的</p>
+        <p v-else>假的</p>
+    </div>
+    <h2>循环</h2>
+    <div id="app-4">
+        <p v-for="todo in todos">{{ todo.text }}</p>
+    </div>
+
+    <h2>处理用户输入</h2>
+    <div id="app-5">
+        <p>{{ message }}</p>
+        <button v-on:click="reverseMessage">反转消息</button>
+    </div>
+
+    <h2>v-model、双向绑定</h2>
+    <div id="app-6">
+        <p>{{ message }}</p>
+        <input type="text" v-model="message">
+    </div>
+
+    <h2>组件化应用构建</h2>
+    <ol id="app-7">
+        <!-- 创建一个 todo-item 组件的实例 -->
+        <todo-item v-for="item in groceryList"
+                   v-bind:key="item.id"
+                   v-bind:todo="item">
+
+        </todo-item>
+    </ol>
+
+    <pre style="font-size: 18px">
+    &ltdiv id="xxx"&gt
+        &ltapp-nav&gt&lt/app-nav&gt
+        &ltapp-view&gt
+            &ltapp-sidebar&gt&lt/app-sidebar&gt
+            &ltapp-content&gt&lt/app-content&gt
+        &lt/app-view&gt
+    &lt/div&gt
+    </pre>
+
 </body>
 <script src="../js/vue.min.js"></script>
 <script>
@@ -17,5 +70,75 @@
             message: 'Hello Vue!'
         }
     })
+
+    var app2 = new Vue({
+        el: '#app-2',
+        data: {
+            message: '页面加载于' + new Date().toLocaleString()
+        }
+    })
+    app2.message = "新消息"
+
+    var app3 = new Vue({
+        el: '#app-3',
+        data: {
+            seen: true
+        }
+    })
+    app3.seen = false
+
+    //循环
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            todos: [
+                {text: '学习 javascript'},
+                {text: '学习 Vue'},
+                {text: '成为大神'},
+            ]
+        }
+    })
+    app4.todos.push({text: 'push的新项目'})
+
+    //反转消息
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello Vue.js!'
+        },
+        methods: {
+            reverseMessage: function () {
+                this.message = this.message.split('').reverse().join('')
+            }
+        }
+    })
+
+    //v-model、双向绑定
+    var app6 = new Vue({
+        el: '#app-6',
+        data: {
+            message: 'Hello Vue.js!'
+        }
+    })
+
+    //组件化应用
+    // 定义名为 todo-item 的新组件
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+
+    let app7 = new Vue({
+        el: '#app-7',
+        data: {
+            groceryList: [
+                { id: 0, text: '蔬菜' },
+                { id: 1, text: '奶酪' },
+                { id: 2, text: '随便其它什么人吃的东西' },
+            ]
+        }
+    })
+    app7.groceryList.push({id: 4,text: '新增水果了！'})
+
 </script>
 </html>
